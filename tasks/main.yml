@@ -1,0 +1,23 @@
+---
+- name: 'set os variables'
+  include_vars: '{{ item }}'
+  with_first_found:
+   - '{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_distribution | lower }}.yml'
+   - '{{ ansible_os_family | lower }}.yml'
+
+- name: 'disable swap from /etc/fstab'
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+  become: 'yes'
+
+- name: 'disable active swap'
+  command: 'swapoff -a'
+  when: ansible_swaptotal_mb > 0
+  become: 'yes'
+
+- name: 'debian | install dependencies'
+  include: 'debian-install.yml'
+  when: ansible_os_family == 'Debian'

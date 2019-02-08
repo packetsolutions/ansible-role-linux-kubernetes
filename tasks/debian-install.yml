@@ -1,0 +1,16 @@
+---
+- name: 'debian | apt add key'
+  apt_key:
+    url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+  become: 'yes'
+
+- name: 'debian | apt add repository'
+  apt_repository:
+    repo: "deb http://apt.kubernetes.io/ {{ kubernetes_repo }} main"
+  become: 'yes'
+
+- name: 'debian | apt install'
+  apt:
+    name: kubeadm
+    update_cache: yes
+  become: 'yes'
